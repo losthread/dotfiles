@@ -20,13 +20,13 @@ ITEM_DIR="$CONFIG_DIR/items"
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
 sketchybar --bar height=38 \
-  blur_radius=5 \
+  blur_radius=4 \
   position=top \
   sticky=on \
   y_offset=4 \
   padding_left=10 \
   padding_right=10 \
-  color=0x60161622
+  color=0x99161622
 
 ##### Changing Defaults #####
 # We now change some default values that are applied to all further items
