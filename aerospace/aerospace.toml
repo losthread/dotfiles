@@ -140,11 +140,11 @@ preset = 'qwerty'
   ]
 
   # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-  alt-1 = 'workspace Browser'
-  alt-2 = 'workspace Development'
-  alt-3 = 'workspace Tools'
-  alt-4 = 'workspace Communication'
-  alt-5 = 'workspace Extra'
+  alt-1 = 'workspace 1'
+  alt-2 = 'workspace 2'
+  alt-3 = 'workspace 3'
+  alt-4 = 'workspace 4'
+  alt-5 = 'workspace 5'
   alt-6 = 'workspace 6'
   alt-7 = 'workspace 7'
   alt-8 = 'workspace 8'
@@ -193,6 +193,9 @@ preset = 'qwerty'
   shift-down = ['volume set 0', 'mode main']
 
 # App shortcuts
+[[on-window-detected]]
+if.app-name-regex-substring = "UTM"
+run = ['move-node-to-workspace Extra', 'layout floating']
 
 [[on-window-detected]]
 if.app-id = 'org.mozilla.firefox'
