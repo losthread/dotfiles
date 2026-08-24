@@ -1,2 +1,2 @@
-# dotfiles
-A repo for managing my dotfiles and configs
+# Dotfiles
+There is no place like ~.config/
