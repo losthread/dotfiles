@@ -1,0 +1,25 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "openai/allmodels",
+  "permission": {
+    "edit": "ask",
+    "bash": "ask"
+  },
+  "provider": {
+    "openai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:20128/v1",
+        "apiKey": "sk-391496b798528bf5-jbzx7v-a0b46421"
+      },
+      "models": {
+        "allmodels": {
+          "limit": {
+            "context": 32000,
+            "output": 4096
+          }
+        }
+      }
+    }
+  }
+}
