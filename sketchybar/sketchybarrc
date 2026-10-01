@@ -23,8 +23,8 @@ bar=(
   border_width=0
   border_color=$BORDER
   shadow=on
-  padding_left=20
-  padding_right=20
+  padding_left=14
+  padding_right=14
 )
 
 sketchybar --bar "${bar[@]}"
