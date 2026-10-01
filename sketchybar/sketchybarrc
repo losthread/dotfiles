@@ -1,69 +1,126 @@
-#!/bin/bash
-CONFIG_DIR="$HOME/.config/sketchybar"
-
-# Loads all defined colors
-source "$CONFIG_DIR/colors.sh"
-
-# This is a demo config to show some of the most important commands more easily.
-# This is meant to be changed and configured, as it is intentionally kept sparse.
-# For a more advanced configuration example see my dotfiles:
-# https://github.com/FelixKratz/dotfiles
-
+# This is a demo config to showcase some of the most important commands.
+# It is meant to be changed and configured, as it is intentionally kept sparse.
+# For a (much) more advanced configuration example see my dotfiles:
 PLUGIN_DIR="$CONFIG_DIR/plugins"
-ITEM_DIR="$CONFIG_DIR/items"
+SECTION_HEIGHT=28
+SECTION_PADDING=20
+
+source "$HOME/.config/themes/catpuccin/shellcolors.lua"
+
+BORDER="$ACTIVE"
+BACKGROUND=0xdd313244
 
 ##### Bar Appearance #####
-# Configuring the general appearance of the bar, these are only some of the
-# options available. For all options see:
-# https://felixkratz.github.io/SketchyBar/config/bar
-# If you are looking for other colors, see the color picker:
-# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
-sketchybar --bar height=38 \
-  blur_radius=4 \
-  position=top \
-  sticky=on \
-  y_offset=4 \
-  padding_left=10 \
-  padding_right=10 \
-  color=0x99161622
+bar=(
+  position=top
+  height=38
+  margin=0
+  y_offset=6
+  blur_radius=30
+  color=0x33000000
+  corner_radius=1
+  border_width=0
+  border_color=$BORDER
+  shadow=on
+  padding_left=20
+  padding_right=20
+)
+
+sketchybar --bar "${bar[@]}"
 
 ##### Changing Defaults #####
-# We now change some default values that are applied to all further items
-# For a full list of all available item properties see:
-# https://felixkratz.github.io/SketchyBar/config/items
 
-sketchybar --default icon.font="SF Pro:Semibold:12.0" \
-  icon.color=$ITEM_COLOR \
-  label.font="SF Pro:Semibold:12.0" \
-  label.color=$ITEM_COLOR \
-  background.color=$ACCENT_COLOR \
-  background.corner_radius=10 \
-  background.height=20 \
-  padding_left=4 \
-  padding_right=4 \
-  icon.padding_left=6 \
-  icon.padding_right=3 \
-  label.padding_left=3 \
-  label.padding_right=6 
+default=(
+  icon.font="JetBrains Mono:Medium:14.0"
+  label.font="JetBrains Mono:Medium:14.0"
+  icon.color=0xffffffff
+  label.color=0xffffffff
+  icon.padding_left=4
+  icon.padding_right=4
+  label.padding_left=4
+  label.padding_right=4
+  background.corner_radius=50
+)
+sketchybar --default "${default[@]}"
+sketchybar --add event aerospace_workspace_change
 
-# -- Left Side Items --
-source $ITEM_DIR/spaces.sh
-source $ITEM_DIR/front_app.sh
+##### Adding AeroSpace workspace indicators #####
+for sid in {1..9}
+do
+  sketchybar --add item space."$sid" left \
+             --set space."$sid" \
+                   label="$sid" \
+                   script="$PLUGIN_DIR/aerospace_spaces.sh" \
+                   click_script="aerospace workspace $sid" \
+                   icon.drawing=off \
+                   label.align=center \
+                   label.width=36 \
+                   label.padding_left=0 \
+                   label.padding_right=0 \
+                   width=36 \
+                   background.height=$SECTION_HEIGHT \
+                   background.corner_radius=6 \
+                   background.color=0x00000000 \
+                   padding_left=0 \
+                   padding_right=0 \
+             --subscribe space."$sid" aerospace_workspace_change
+done
 
-# -- Right Side Of Notch Items --
-# source $ITEM_DIR/media.sh
+sketchybar --add bracket spaces space.1 space.2 space.3 space.4 space.5 space.6 space.7 space.8 space.9 \
+           --set spaces background.height=$SECTION_HEIGHT \
+                        background.color=$BACKGROUND \
+                        background.border_width=0 \
+                        padding_left=0 \
+                        padding_right=$SECTION_PADDING
 
-# -- Right Side Items --
-source $ITEM_DIR/calendar.sh
-source $ITEM_DIR/wifi.sh
-source $ITEM_DIR/battery.sh
-source $ITEM_DIR/volume.sh
-# source $ITEM_DIR/cpu.sh
-# source $ITEM_DIR/memory.sh
+sketchybar --add item front_app left \
+           --set front_app icon.drawing=off \
+                          script="$PLUGIN_DIR/front_app.sh" \
+                          background.drawing=off \
+                          background.height=$SECTION_HEIGHT \
+                          label.align=left \
+                          label.padding_left=12 \
+                          label.padding_right=12 \
+           --subscribe front_app front_app_switched
 
-##### Finalizing Setup #####
-# The below command is only needed at the end of the initial configuration to
-# force all scripts to run the first time, it should never be run in an item script.
+sketchybar --add item clock right \
+           --set clock update_freq=10 \
+                 icon.color=$CLOCK \
+                 padding_left=10 \
+                 background.drawing=off \
+                 script="$PLUGIN_DIR/clock.sh" \
+                 background.height=$SECTION_HEIGHT \
+                 background.color=$BACKGROUND \
+                 background.border_width=0 \
+
+
+sketchybar --add item battery right \
+           --set battery update_freq=120 \
+                         script="$PLUGIN_DIR/battery.sh" \
+                         background.drawing=off \
+                         padding_left=10 \
+           --subscribe battery system_woke power_source_change \
+
+sketchybar --add item volume right \
+           --set volume script="$PLUGIN_DIR/volume.sh" background.drawing=off update_freq=5 \
+           --subscribe volume volume_change
+
+sketchybar --add item cpu right \
+           --set cpu script="$PLUGIN_DIR/cpu.sh" \
+                     update_freq=5 \
+                     padding_left=10
+
+sketchybar --add item memory right \
+           --set memory script="$PLUGIN_DIR/memory.sh" \
+                     update_freq=5 \
+                     padding_left=10
+
+sketchybar --add bracket systeminfo battery memory \
+           --set systeminfo background.height=$SECTION_HEIGHT \
+                            background.color=$BACKGROUND \
+                            background.border_width=0 \
+                            padding_left=$SECTION_PADDING \
+                            padding_right=$SECTION_PADDING
 
 sketchybar --update

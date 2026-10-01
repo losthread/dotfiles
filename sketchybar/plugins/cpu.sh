@@ -1,9 +1,11 @@
 #!/bin/bash
 
-CORE_COUNT=$(sysctl -n machdep.cpu.thread_count)
-CPU_INFO=$(ps -eo pcpu,user)
-CPU_SYS=$(echo "$CPU_INFO" | grep -v $(whoami) | sed "s/[^ 0-9\.]//g" | awk "{sum+=\$1} END {print sum/(100.0 * $CORE_COUNT)}")
-CPU_USER=$(echo "$CPU_INFO" | grep $(whoami) | sed "s/[^ 0-9\.]//g" | awk "{sum+=\$1} END {print sum/(100.0 * $CORE_COUNT)}")
+# Get raw usage from top (user + sys total across all cores)
+cpu_usage=$(ps -A -o %cpu | awk '{s+=$1} END {print s}')
+cpu_usage_int=$(printf "%.0f" "$cpu_usage")
 
-CPU_PERCENT=$(ps -eo pcpu | awk -v core_count=$(sysctl -n machdep.cpu.thread_count) '{sum+=$1} END {printf "%.0f\n", sum/core_count}')
-sketchybar --set $NAME label="$CPU_PERCENT%"
+# Normalise to 0–100 like btop
+cpu_norm=$(echo "$cpu_usage_int / 8" | bc)
+cpu_int=$(printf "%.0f" "$cpu_norm")
+
+sketchybar --set "$NAME" icon="􀫥" label="${cpu_int}%"

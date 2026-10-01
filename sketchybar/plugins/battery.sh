@@ -1,42 +1,30 @@
 #!/bin/sh
 
-source "$CONFIG_DIR/colors.sh"
+source "$HOME/.config/themes/catpuccin/shellcolors.lua"
 
-PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
-CHARGING=$(pmset -g batt | grep 'AC Power')
+PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
+CHARGING="$(pmset -g batt | grep 'AC Power')"
 
-if [ $PERCENTAGE = "" ]; then
+if [ "$PERCENTAGE" = "" ]; then
   exit 0
 fi
 
-case ${PERCENTAGE} in
-9[0-9] | 100)
-  ICON="􀛨"
-  COLOR=$ITEM_COLOR
+case "${PERCENTAGE}" in
+  9[0-9]|100) ICON="􀛨" COLOR=$BATTERY_FULL
   ;;
-[6-8][0-9])
-  ICON="􀺸"
-  COLOR=$ITEM_COLOR
+  [6-8][0-9]) ICON="􀺸" COLOR=$BATTERY_HIGH
   ;;
-[3-5][0-9])
-  ICON="􀺶"
-  COLOR="0xFFd97706"
+  [3-5][0-9]) ICON="􀺶" COLOR=$BATTERY_MID
   ;;
-[1-2][0-9])
-  ICON="􀛩"
-  COLOR="0xFFf97316"
+  [1-2][0-9]) ICON="􀛩" COLOR=$BATTERY_LOW
   ;;
-*)
-  ICON="􀛪"
-  COLOR="0xFFef4444"
-  ;;
+  *) ICON="􀛪" COLOR=$BATTERY_EMPTY
 esac
 
-if [[ $CHARGING != "" ]]; then
+if [[ "$CHARGING" != "" ]]; then
   ICON="􀢋"
-  COLOR=$ITEM_COLOR
 fi
 
 # The item invoking this script (name $NAME) will get its icon and label
 # updated with the current battery status
-sketchybar --set $NAME icon="$ICON" label="${PERCENTAGE}%" icon.color="$COLOR"
+sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%" icon.color="$COLOR" padding_right=10
