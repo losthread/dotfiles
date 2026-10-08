@@ -45,6 +45,16 @@ default=(
 sketchybar --default "${default[@]}"
 sketchybar --add event aerospace_workspace_change
 
+# arch logo (monochrome)
+
+sketchybar --add item arch_logo left \
+           --set arch_logo icon="󰣇" \
+                        icon.font="JetBrainsMono Nerd Font:Bold:25.0" \
+                        icon.color=0xffffffff \
+                        label.drawing=off \
+                        padding_left=10 \
+                        padding_right=10
+
 ##### Adding AeroSpace workspace indicators #####
 for sid in {1..9}
 do
@@ -80,7 +90,7 @@ sketchybar --add item front_app left \
                           background.drawing=off \
                           background.height=$SECTION_HEIGHT \
                           label.align=left \
-                          label.padding_left=12 \
+                          label.padding_left=9 \
                           label.padding_right=12 \
            --subscribe front_app front_app_switched
 
